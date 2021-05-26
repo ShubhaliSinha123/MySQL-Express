@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const express = require('express');
 var app = express();
 const bodyparser = require('body-parser');
-
+const port = process.env.port || 3000;
 
 app.use(bodyparser.json());
 
@@ -20,8 +20,8 @@ mysqlConnection.connect((err) => {
     console.log('DB connection failed \n Error :' + JSON.stringify(err, undefined, 2));
 });
 
-app.listen(3000, () => {
-    console.log('Listening to port: 3000');
+app.listen(port, () => {
+    console.log(`Listening to port: ${port}`);
 });
 
 app.get('/employees', (req,res) => {
@@ -66,17 +66,22 @@ app.post('/insert', (req,res) => {
     mysqlConnection.query(sql,post,(err,res) =>{
         if (err) throw err;
         console.log("1 record inserted");
-    })
-    mysqlConnection.end();
-});
+    });
 
 //Update a single record
-app.patch('/update', (req,res) => {
+app.post('/update/:EmpID',(req,res) => {
+    var sql = `UPDATE employee SET Name='${Name}',EmpCode='${EmpCode}',Salary='${Salary}' WHERE EmpID='${EmpID}'`;
+    var EmpCode= req.body.EmpCode;
+    var Salary= req.body.Salary;
+    var EmpID= req.params.EmpID;
     
-    var sql = "UPDATE employee SET EmpID = 4 WHERE EmpID =5";
-    mysqlConnection.query(sql, (err,result) =>{
+    mysqlConnection.query(sql,(err,res) =>{
         if (err) throw err;
+        
         console.log(result.affectedRows + "record(s) updated");
+    })
+})
+mysqlConnection.end();
 });
-    mysqlConnection.end();
-  });
+
+  
