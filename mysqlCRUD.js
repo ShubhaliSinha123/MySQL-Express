@@ -56,8 +56,14 @@ app.delete('/employees/:id', (req,res) => {
 //Insert new data
 app.post('/insert', (req,res) => {
     
-    var sql = "insert into employee(Name,EmpCode,Salary) values('Florina Gogoi','EMP98',100000000)";
-    mysqlConnection.query(sql, (err) =>{
+    let sql = 'INSERT INTO employee SET ?'
+    let post = {
+        Name: req.body.Name,
+        EmpCode: req.body.EmpCode,
+        Salary: req.body.Salary
+    }
+
+    mysqlConnection.query(sql,post,(err,res) =>{
         if (err) throw err;
         console.log("1 record inserted");
     })
