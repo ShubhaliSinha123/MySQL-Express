@@ -67,21 +67,14 @@ app.post('/insert', (req,res) => {
         if (err) throw err;
         console.log("1 record inserted");
     });
-
-//Update a single record
-app.post('/update/:EmpID',(req,res) => {
-    var sql = `UPDATE employee SET Name='${Name}',EmpCode='${EmpCode}',Salary='${Salary}' WHERE EmpID='${EmpID}'`;
-    var EmpCode= req.body.EmpCode;
-    var Salary= req.body.Salary;
-    var EmpID= req.params.EmpID;
-    
-    mysqlConnection.query(sql,(err,res) =>{
-        if (err) throw err;
-        
-        console.log(result.affectedRows + "record(s) updated");
-    })
-})
-mysqlConnection.end();
 });
 
-  
+    app.patch('/update/:EmpID',(req,res) => {
+    
+        mysqlConnection.query("UPDATE employee SET Name=?,EmpCode=?,Salary=? WHERE EmpID=?",[req.body.Name,req.body.EmpCode,req.body.Salary,req.params.EmpID],(err,results) => {
+            if (err) 
+            console.log(err);
+            
+            res.end(JSON.stringify(results));
+        });
+    });
